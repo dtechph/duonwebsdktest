@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sdk:build": "npm run build --prefix \"../../DuonCore/DuonSDK\" -w @dtechph/wayfinding-core && npm run build --prefix \"../../DuonCore/DuonSDK\" -w @dtechph/wayfinding-web"
   },
   "dependencies": {
-    "@dtechph/wayfinding-web": "^1.7.0",
+    "@dtechph/wayfinding-core": "^1.8.0",
+    "@dtechph/wayfinding-web": "^1.8.0",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"

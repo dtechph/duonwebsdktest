@@ -52,8 +52,20 @@ useDuonMalls
   → DuonWayfinding.endTelemetrySession() on unmount
 ```
 
-SDK package: `@dtechph/wayfinding-web` from npm. `@dtechph/wayfinding-core` is pulled in
-automatically — do not import it directly.
+SDK packages are linked to the local DuonSDK checkout so unpublished changes can be
+tested here:
+
+- `@dtechph/wayfinding-web` → `file:../../DuonCore/DuonSDK/packages/web`
+- `@dtechph/wayfinding-core` → `file:../../DuonCore/DuonSDK/packages/core`
+
+App code still imports only from `@dtechph/wayfinding-web`. After you publish, switch
+those dependencies back to the npm versions.
+
+Rebuild the SDK whenever you change it, then refresh this app:
+
+```bash
+npm run sdk:build
+```
 
 ## Scripts
 
