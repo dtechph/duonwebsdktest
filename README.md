@@ -1,7 +1,8 @@
 # Duon Wayfinding Web SDK sample
 
 Next.js sample that lists malls from the Duon backend and embeds the selected map
-via the published npm package `@dtechph/wayfinding-web`.
+via `@dtechph/wayfinding-web`. Situm malls show origin/destination routing; kiosk malls
+use the opaque iframe viewer.
 
 This follows the DuonSDK web getting-started guide (`DuonSDK/docs/web`). Indoor
 positioning is not available in the browser.
@@ -36,10 +37,12 @@ for this key — it can only read assigned malls and write analytics.
 
 ## Samples
 
-| Route | What it shows |
-|-------|----------------|
-| `/` | Full-page map. `DuonMallSelector` + `DuonMapView` filling the viewport. |
-| `/embedded` | Map in a smaller card (`style={{ height: 480 }}`) with a custom mall picker that calls `setActiveMall`. |
+| Route | Mode | Layout | What it shows |
+|-------|------|--------|----------------|
+| `/` | `embedded` | Full page | `DuonMallSelector` + `DuonMapView` filling the viewport. Situm malls include origin/destination routing. |
+| `/embedded` | `embedded` | Controlled size | Map in a 480px card with a custom mall picker that calls `setActiveMall`. |
+| `/iframe` | `iframe` | Full page | Same full-page layout, opaque viewer iframe with no routing chrome. |
+| `/iframe/card` | `iframe` | Controlled size | Same 480px card layout as `/embedded`, opaque viewer iframe. |
 
 ```
 useDuonMalls
@@ -49,8 +52,8 @@ useDuonMalls
   → DuonWayfinding.endTelemetrySession() on unmount
 ```
 
-SDK package: `@dtechph/wayfinding-web` (npm). `@dtechph/wayfinding-core` is pulled
-in automatically — do not import it directly.
+SDK package: `@dtechph/wayfinding-web` from npm. `@dtechph/wayfinding-core` is pulled in
+automatically — do not import it directly.
 
 ## Scripts
 

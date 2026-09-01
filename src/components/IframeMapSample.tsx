@@ -4,7 +4,7 @@ import { DuonMallSelector, DuonMapView } from "@dtechph/wayfinding-web";
 import { SampleNav } from "@/components/SampleNav";
 import { useDuonMalls } from "@/lib/useDuonMalls";
 
-export default function WayfindingPage() {
+export default function IframeMapSample() {
   const { malls, selectedMall, setSelectedMall, loading, error, loadMalls } =
     useDuonMalls();
 
@@ -24,7 +24,8 @@ export default function WayfindingPage() {
       {selectedMall ? (
         <DuonMapView
           mall={selectedMall}
-          mode="embedded"
+          mode="iframe"
+          showRoutePicker={false}
           style={{ flex: 1, minHeight: 0 }}
         />
       ) : (
