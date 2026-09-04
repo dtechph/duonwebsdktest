@@ -4,8 +4,10 @@ Next.js sample that lists malls from the Duon backend and embeds the selected ma
 via `@dtechph/wayfinding-web`. Situm malls show origin/destination routing; kiosk malls
 use the opaque iframe viewer.
 
-This follows the DuonSDK web getting-started guide (`DuonSDK/docs/web`). Indoor
-positioning is not available in the browser.
+Full integration guide: [Web docs](../../DuonCore/DuonSDK/docs/web) in the sibling DuonSDK
+checkout. Iframe vs embedded vs origin/destination pathfinding:
+[map render modes](../../DuonCore/DuonSDK/docs/web/map-modes.md). Indoor positioning is
+not available in the browser.
 
 ## Prerequisites
 
