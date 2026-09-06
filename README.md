@@ -1,12 +1,15 @@
 # Duon Wayfinding Web SDK sample
 
 Next.js sample that lists malls from the Duon backend and embeds the selected map
-via the published npm package [`@dtechph/wayfinding-web`](https://www.npmjs.com/package/@dtechph/wayfinding-web) **^1.9.0**.
-Situm malls show origin/destination routing; kiosk malls use the opaque iframe viewer.
+via [`@dtechph/wayfinding-web`](https://www.npmjs.com/package/@dtechph/wayfinding-web).
+This checkout uses the local `DuonCore/DuonSDK/packages/web` package so unpublished
+analytics fixes are picked up. Situm malls show origin/destination routing; kiosk malls
+use the opaque iframe viewer.
 
-Embedded Situm maps report `poi_select`, `poi_category_selected`, `search`, and
-`route_request` automatically. Web draws a path; it does not start turn-by-turn walking
-navigation. Indoor positioning is not available in the browser.
+Embedded Situm maps report `poi_select`, `poi_category_selected` (with category **names**
+resolved from the POI catalog), `search`, `route_request`, and `navigation_request`
+automatically. Point-to-point routing is what CMS counts as “Most navigated POIs”.
+Indoor positioning is not available in the browser.
 
 Full integration guide: [Web docs](../../DuonCore/DuonSDK/docs/web) in the sibling DuonSDK
 checkout. Iframe vs embedded vs origin/destination pathfinding:
@@ -27,9 +30,11 @@ npm install
 npm run dev
 ```
 
-No GitHub access is required. `npm install` pulls `@dtechph/wayfinding-web` from the public
-npm registry. `@dtechph/wayfinding-core` is a transitive dependency — import only from
-`@dtechph/wayfinding-web`.
+No GitHub access is required. This checkout depends on the local
+`DuonCore/DuonSDK/packages/web` package so unpublished analytics fixes are picked
+up. Change the dependency back to `@dtechph/wayfinding-web` from npm to install from
+the registry only. `@dtechph/wayfinding-core` is a transitive dependency — import only
+from `@dtechph/wayfinding-web`.
 
 Open [http://localhost:3000](http://localhost:3000). If port 3000 is taken, Next.js
 picks the next free port.
@@ -61,7 +66,7 @@ useDuonMalls
   → DuonWayfinding.endTelemetrySession() on unmount
 ```
 
-SDK package: `@dtechph/wayfinding-web` ^1.9.0 (npm)
+SDK package: local `DuonCore/DuonSDK/packages/web` (`file:` in `package.json`).
 
 ## Scripts
 

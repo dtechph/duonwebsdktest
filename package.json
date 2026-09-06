@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@dtechph/wayfinding-web": "^1.9.0",
+    "@dtechph/wayfinding-web": "file:../../DuonCore/DuonSDK/packages/web",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
