@@ -1,17 +1,20 @@
 # Duon Wayfinding Web SDK sample
 
 Next.js sample that lists malls from the Duon backend and embeds the selected map
-via `@dtechph/wayfinding-web`. Situm malls show origin/destination routing; kiosk malls
-use the opaque iframe viewer.
+via the published npm package [`@dtechph/wayfinding-web`](https://www.npmjs.com/package/@dtechph/wayfinding-web) **^1.9.0**.
+Situm malls show origin/destination routing; kiosk malls use the opaque iframe viewer.
+
+Embedded Situm maps report `poi_select`, `poi_category_selected`, `search`, and
+`route_request` automatically. Web draws a path; it does not start turn-by-turn walking
+navigation. Indoor positioning is not available in the browser.
 
 Full integration guide: [Web docs](../../DuonCore/DuonSDK/docs/web) in the sibling DuonSDK
 checkout. Iframe vs embedded vs origin/destination pathfinding:
-[map render modes](../../DuonCore/DuonSDK/docs/web/map-modes.md). Indoor positioning is
-not available in the browser.
+[map render modes](../../DuonCore/DuonSDK/docs/web/map-modes.md).
 
 ## Prerequisites
 
-1. A Map Viewer scoped API key from Duon (CMS → SDK Keys)
+1. A Map Viewer scoped API key from Duon
 2. At least one mall assigned to that key
 
 ## Setup
@@ -23,6 +26,10 @@ cp .env.example .env.local
 npm install
 npm run dev
 ```
+
+No GitHub access is required. `npm install` pulls `@dtechph/wayfinding-web` from the public
+npm registry. `@dtechph/wayfinding-core` is a transitive dependency — import only from
+`@dtechph/wayfinding-web`.
 
 Open [http://localhost:3000](http://localhost:3000). If port 3000 is taken, Next.js
 picks the next free port.
@@ -50,24 +57,11 @@ for this key — it can only read assigned malls and write analytics.
 useDuonMalls
   → DuonWayfinding.initialize({ platform: "web" })
   → DuonWayfinding.fetchMalls()
-  → selector + DuonMapView
+  → selector + DuonMapView(mall)
   → DuonWayfinding.endTelemetrySession() on unmount
 ```
 
-SDK packages are linked to the local DuonSDK checkout so unpublished changes can be
-tested here:
-
-- `@dtechph/wayfinding-web` → `file:../../DuonCore/DuonSDK/packages/web`
-- `@dtechph/wayfinding-core` → `file:../../DuonCore/DuonSDK/packages/core`
-
-App code still imports only from `@dtechph/wayfinding-web`. After you publish, switch
-those dependencies back to the npm versions.
-
-Rebuild the SDK whenever you change it, then refresh this app:
-
-```bash
-npm run sdk:build
-```
+SDK package: `@dtechph/wayfinding-web` ^1.9.0 (npm)
 
 ## Scripts
 
