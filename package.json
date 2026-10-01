@@ -9,7 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@dtechph/wayfinding-web": "1.11.0",
+    "@dtechph/wayfinding-core": "^1.12.0",
+    "@dtechph/wayfinding-web": "^1.11.1",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
