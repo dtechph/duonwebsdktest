@@ -1,12 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   DuonMallSelector,
   DuonMapView,
+  buildWayfindingQuery,
   fetchPois,
+  findMallForQuery,
+  parseWayfindingQuery,
+  type DuonMall,
   type DuonPoi,
 } from "@dtechph/wayfinding-web";
+import { DeeplinkPanel } from "@/components/DeeplinkPanel";
 import { PoiDetailsPanel } from "@/components/PoiDetailsPanel";
 import { SampleNav } from "@/components/SampleNav";
 import { useDuonMalls } from "@/lib/useDuonMalls";
@@ -17,6 +23,10 @@ function changedPoiId(previous: RouteIds, next: RouteIds): string | null {
   if (next.toPoiId !== previous.toPoiId) return next.toPoiId;
   if (next.fromPoiId !== previous.fromPoiId) return next.fromPoiId;
   return null;
+}
+
+function mallQueryKey(mall: DuonMall): string {
+  return mall.slug ?? mall.buildingId;
 }
 
 /** Map taps omit tenant fields. Overlay only defined values onto the catalog POI. */
@@ -36,21 +46,57 @@ function joinPoi(catalog: DuonPoi | undefined, partial?: DuonPoi): DuonPoi | nul
 }
 
 export default function WayfindingPage() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
   const { malls, selectedMall, setSelectedMall, loading, error, loadMalls } =
     useDuonMalls();
   const [pois, setPois] = useState<DuonPoi[]>([]);
   const [poisLoading, setPoisLoading] = useState(false);
   const [poiError, setPoiError] = useState<string | null>(null);
   const [selectedPoi, setSelectedPoi] = useState<DuonPoi | null>(null);
+  const [originPoiId, setOriginPoiId] = useState<string | null>(null);
+  const [destinationPoiId, setDestinationPoiId] = useState<string | null>(null);
   const poisRef = useRef<DuonPoi[]>([]);
   const selectedIdRef = useRef<string | null>(null);
   const routeRef = useRef<RouteIds>({ fromPoiId: null, toPoiId: null });
+
+  const syncUrl = useCallback(
+    (mall: DuonMall | null, route: RouteIds) => {
+      const qs = buildWayfindingQuery({
+        mall: mall ? mallQueryKey(mall) : null,
+        originPoiId: route.fromPoiId,
+        destinationPoiId: route.toPoiId,
+      });
+      const next = qs ? `${pathname}?${qs}` : pathname;
+      router.replace(next, { scroll: false });
+    },
+    [pathname, router]
+  );
 
   const showPoi = useCallback((id: string, partial?: DuonPoi) => {
     selectedIdRef.current = id;
     const full = poisRef.current.find((item) => item.id === id);
     setSelectedPoi(joinPoi(full, partial ?? { id, name: id }));
   }, []);
+
+  useEffect(() => {
+    if (!malls.length) return;
+    const query = parseWayfindingQuery(searchParams.toString());
+    if (!query.mall) return;
+    const mall = findMallForQuery(malls, query.mall);
+    if (mall) setSelectedMall(mall);
+  }, [malls, searchParams, setSelectedMall]);
+
+  useEffect(() => {
+    const query = parseWayfindingQuery(searchParams.toString());
+    setOriginPoiId(query.originPoiId);
+    setDestinationPoiId(query.destinationPoiId);
+    routeRef.current = {
+      fromPoiId: query.originPoiId,
+      toPoiId: query.destinationPoiId,
+    };
+  }, [searchParams]);
 
   useEffect(() => {
     routeRef.current = { fromPoiId: null, toPoiId: null };
@@ -94,6 +140,18 @@ export default function WayfindingPage() {
     );
   }, [pois]);
 
+  const handleMallSelect = useCallback(
+    (mall: DuonMall) => {
+      setSelectedMall(mall);
+      const cleared: RouteIds = { fromPoiId: null, toPoiId: null };
+      routeRef.current = cleared;
+      setOriginPoiId(null);
+      setDestinationPoiId(null);
+      syncUrl(mall, cleared);
+    },
+    [setSelectedMall, syncUrl]
+  );
+
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-zinc-50">
       <SampleNav />
@@ -101,10 +159,16 @@ export default function WayfindingPage() {
       <DuonMallSelector
         malls={malls}
         selectedMall={selectedMall}
-        onSelect={setSelectedMall}
+        onSelect={handleMallSelect}
         loading={loading}
         error={error}
         onRetry={loadMalls}
+      />
+
+      <DeeplinkPanel
+        selectedMall={selectedMall}
+        originPoiId={originPoiId}
+        destinationPoiId={destinationPoiId}
       />
 
       <div className="flex min-h-0 flex-1 flex-col md:flex-row">
@@ -113,10 +177,15 @@ export default function WayfindingPage() {
             mall={selectedMall}
             mode="embedded"
             style={{ flex: 1, minWidth: 0, minHeight: 0, width: "auto" }}
+            originPoiId={originPoiId}
+            destinationPoiId={destinationPoiId}
             onPoiSelected={(poi) => showPoi(poi.id, poi)}
             onRouteChange={(route) => {
               const id = changedPoiId(routeRef.current, route);
               routeRef.current = route;
+              setOriginPoiId(route.fromPoiId);
+              setDestinationPoiId(route.toPoiId);
+              syncUrl(selectedMall, route);
               if (id) showPoi(id);
             }}
           />

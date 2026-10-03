@@ -39,6 +39,18 @@ from `@dtechph/wayfinding-web`.
 Open [http://localhost:3000](http://localhost:3000). If port 3000 is taken, Next.js
 picks the next free port.
 
+### Deeplink example
+
+After you pick a mall and route, use the **Deeplink** panel to copy a shareable URL, or
+open a link directly:
+
+```text
+http://localhost:3000/?mall=<buildingId-or-slug>&origin=<poiId>&destination=<poiId>
+```
+
+POI ids are Situm ids from the route picker or from `fetchPois()`. Embedded Situm malls
+draw the path when both `origin` and `destination` are set.
+
 ### Environment
 
 | Variable | Description |
@@ -53,7 +65,7 @@ for this key — it can only read assigned malls and write analytics.
 
 | Route | Mode | Layout | What it shows |
 |-------|------|--------|----------------|
-| `/` | `embedded` | Full page | `DuonMallSelector` + `DuonMapView` filling the viewport. Situm malls include origin/destination routing. |
+| `/` | `embedded` | Full page | `DuonMallSelector` + `DuonMapView` filling the viewport. Situm malls include origin/destination routing. **Deeplink** panel: share URLs with `?mall=&origin=&destination=`. |
 | `/embedded` | `embedded` | Controlled size | Map in a 480px card with a custom mall picker that calls `setActiveMall`. |
 | `/iframe` | `iframe` | Full page | Same full-page layout, opaque viewer iframe with no routing chrome. |
 | `/iframe/card` | `iframe` | Controlled size | Same 480px card layout as `/embedded`, opaque viewer iframe. |
